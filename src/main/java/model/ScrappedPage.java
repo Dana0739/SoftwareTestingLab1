@@ -2,22 +2,18 @@ package model;
 
 import org.jsoup.nodes.Document;
 
-public class ScrappedWebPage {
+public class ScrappedPage {
 
-    private final String url;
-
-    private final Document content; //TODO String???
+    private final Document content; //todo String?? Byte?
 
     private final String filename;
 
-    public ScrappedWebPage (String url, Document content) {
-        this.url = url;
+    public ScrappedPage(String url, Document content) {
         this.content = content;
         this.filename = null;
     }
 
-    public ScrappedWebPage (String url, Document content, String filename) {
-        this.url = url;
+    public ScrappedPage(String url, Document content, String filename) {
         this.content = content;
         this.filename = filename;
     }
@@ -30,7 +26,4 @@ public class ScrappedWebPage {
         return filename;
     }
 
-    public String getUrl() {
-        return url;
-    }
 }

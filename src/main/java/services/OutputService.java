@@ -1,9 +1,15 @@
 package services;
 
-import model.ScrappedWebPage;
+import model.ScrappedPage;
+import model.WebScrapperState;
 
 public class OutputService {
-    public static void FileOutput(ScrappedWebPage page) {
+
+    public static void Output(WebScrapperState state, ScrappedPage page) {
+        //todo write
+    }
+
+    private static void FileOutput(ScrappedPage page) { //todo rewrite
         if (page.getFilename() != null) {
 
         } else {
@@ -11,12 +17,11 @@ public class OutputService {
         }
     }
 
-    public static void ConsoleOutput(ScrappedWebPage page) {
-        System.out.println("URL: " + page.getUrl());
+    private static void ConsoleOutput(ScrappedPage page) {
         System.out.println("Content: \n" + page.getContent());
     }
 
-    public static void ConsoleHelp() {
+    public static void ConsoleHelp() { //todo rewrite
         System.out.println("\nUsage of Dana's web scraping program:\n"
                 + "[-h] [<URL>] [<URL> -c] [<URL> -f] [<URL> -f <filename>]\n\n"
                 + "-h\t\t\t- call this info\n"

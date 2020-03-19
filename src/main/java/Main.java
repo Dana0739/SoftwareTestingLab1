@@ -1,4 +1,4 @@
-import model.ScrappedWebPage;
+import model.ScrappedPage;
 import model.WebScrapperState;
 import services.InputArgsService;
 import services.OutputService;
@@ -8,8 +8,6 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        ScrappedWebPage page;
-        WebScrapperState state;
 
         switch (args.length) {
 
@@ -20,8 +18,7 @@ public class Main {
                 if (args[0].equals("-h")) {
                     OutputService.ConsoleHelp();
                 } else {
-                    state = InputArgsService.parse(args);
-                    WebScrapingService.Scrap();
+                    callScrapper(args);
                 }
                 break;
             }
@@ -33,8 +30,7 @@ public class Main {
                 if (args[0].equals("-h")) {
                     throw new IllegalArgumentException("-h command has no arguments! For help use command -h.");
                 } else {
-                    state = InputArgsService.parse(args);
-
+                    callScrapper(args);
                 }
                 break;
             }
@@ -43,5 +39,11 @@ public class Main {
                 throw new IllegalArgumentException("You can’t input more than 5 parameters! For help use command -h.");
 
         }
+    }
+
+    private static void callScrapper(String[] args) throws IOException {
+        WebScrapperState state = InputArgsService.parse(args);
+        ScrappedPage page = WebScrapingService.Scrap(state);
+        OutputService.Output(state, page);
     }
 }
