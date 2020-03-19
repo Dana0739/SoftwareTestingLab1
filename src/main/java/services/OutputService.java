@@ -1,12 +1,19 @@
-package Services;
+package services;
+
+import model.ScrappedWebPage;
 
 public class OutputService {
-    public static void FileOutput() {
+    public static void FileOutput(ScrappedWebPage page) {
+        if (page.getFilename() != null) {
 
+        } else {
+
+        }
     }
 
-    public static void ConsoleOutput() {
-
+    public static void ConsoleOutput(ScrappedWebPage page) {
+        System.out.println("URL: " + page.getUrl());
+        System.out.println("Content: \n" + page.getContent());
     }
 
     public static void ConsoleHelp() {
