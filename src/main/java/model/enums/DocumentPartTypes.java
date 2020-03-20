@@ -12,11 +12,7 @@ public enum DocumentPartTypes {
     private String title;
 
     DocumentPartTypes(String title) {
-        if (title == null || title.equals("")) {
-            this.title = "-all";
-        } else {
-            this.title = title;
-        }
+        this.title = title;
     }
 
     public String getTitle() {
@@ -25,5 +21,18 @@ public enum DocumentPartTypes {
 
     public static ArrayList<String> getAll() {
         return new ArrayList<>(Arrays.asList("-all", "-head", "-body", "-text"));
+    }
+
+    public static DocumentPartTypes getByTitle(String title) {
+        if (title == null) return ALL;
+        switch (title) {
+            case "-head": return HEAD;
+            case "-body": return BODY;
+            case "-text": return TEXT;
+            case "-all":
+            case "":
+                return ALL;
+            default: return null;
+        }
     }
 }

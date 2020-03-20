@@ -1,6 +1,6 @@
 package services;
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
 import model.WebScrapperState;
 import model.enums.DocumentPartTypes;
 import model.enums.OutputFileTypes;
@@ -12,18 +12,18 @@ import java.util.stream.Collectors;
 public class InputArgsService {
 
     public static WebScrapperState parse(String[] args) {
-        DocumentPartTypes documentPartType = DocumentPartTypes.valueOf(
-                List.from(args).stream()
+        DocumentPartTypes documentPartType = DocumentPartTypes.getByTitle(
+                List.of(args).stream()
                         .filter(x -> DocumentPartTypes.getAll().contains(x))
                         .collect(Collectors.toList()).get(0));
 
-        OutputFileTypes outputFileType = OutputFileTypes.valueOf(
-                List.from(args).stream()
+        OutputFileTypes outputFileType = OutputFileTypes.getByTitle(
+                List.of(args).stream()
                         .filter(x -> OutputFileTypes.getAll().contains(x))
                         .collect(Collectors.toList()).get(0));
 
-        OutputTypes outputType = OutputTypes.valueOf(
-                List.from(args).stream()
+        OutputTypes outputType = OutputTypes.getByTitle(
+                List.of(args).stream()
                         .filter(x -> OutputTypes.getAll().contains(x))
                         .collect(Collectors.toList()).get(0));
 

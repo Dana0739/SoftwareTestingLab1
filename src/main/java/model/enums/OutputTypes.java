@@ -10,11 +10,7 @@ public enum OutputTypes {
     private String title;
 
     OutputTypes(String title) {
-        if (title == null || title.equals("")) {
-            this.title = "-c";
-        } else {
-            this.title = title;
-        }
+        this.title = title;
     }
 
     public String getTitle() {
@@ -23,5 +19,16 @@ public enum OutputTypes {
 
     public static ArrayList<String> getAll() {
         return new ArrayList<>(Arrays.asList("-f", "-c"));
+    }
+
+    public static OutputTypes getByTitle(String title) {
+        if (title == null) return CONSOLE;
+        switch (title) {
+            case "-f": return FILE;
+            case "-c":
+            case "":
+                return CONSOLE;
+            default: return null;
+        }
     }
 }

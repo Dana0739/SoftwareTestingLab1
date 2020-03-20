@@ -11,11 +11,7 @@ public enum OutputFileTypes {
     private String title;
 
     OutputFileTypes(String title) {
-        if (title == null || title.equals("")) {
-            this.title = "-txt";
-        } else {
-            this.title = title;
-        }
+        this.title = title;
     }
 
     public String getTitle() {
@@ -28,5 +24,17 @@ public enum OutputFileTypes {
 
     public static ArrayList<String> getAll() {
         return new ArrayList<>(Arrays.asList("-txt", "-html", "-xml"));
+    }
+
+    public static OutputFileTypes getByTitle(String title) {
+        if (title == null) return TXT;
+        switch (title) {
+            case "-html": return HTML;
+            case "-xml": return XML;
+            case "-txt":
+            case "":
+                return TXT;
+            default: return null;
+        }
     }
 }
