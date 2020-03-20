@@ -1,5 +1,8 @@
 package model;
 
+import lombok.Data;
+
+@Data
 public class ScrappedPage {
 
     private final String content;
@@ -15,13 +18,4 @@ public class ScrappedPage {
         this.content = content;
         this.filename = filename;
     }
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
 }

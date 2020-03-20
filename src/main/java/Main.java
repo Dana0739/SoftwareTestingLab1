@@ -41,7 +41,7 @@ public class Main {
 
     private static void callScrapper(String[] args) {
         WebScrapperState state = InputArgsService.parse(args);
-        ScrappedPage page = WebScrapingService.Scrap(state);
+        ScrappedPage page = WebScrapingService.scrap(state);
         OutputService.Output(state, page);
     }
 }

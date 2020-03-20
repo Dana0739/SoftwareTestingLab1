@@ -19,7 +19,7 @@ public enum OutputFileTypes {
     }
 
     public String getType() {
-        return "." + title.substring(1, title.length() - 1);
+        return "." + title.substring(1, title.length());
     }
 
     public static ArrayList<String> getAll() {

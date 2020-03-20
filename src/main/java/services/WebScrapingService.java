@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class WebScrapingService {
 
-    public static ScrappedPage Scrap(WebScrapperState state) {
+    public static ScrappedPage scrap(WebScrapperState state) {
         try {
 
             Document doc = Jsoup.connect(state.getUrl()).get();

@@ -13,19 +13,22 @@ public class InputArgsService {
 
     public static WebScrapperState parse(String[] args) {
         DocumentPartTypes documentPartType = DocumentPartTypes.getByTitle(
-                List.of(args).stream()
-                        .filter(x -> DocumentPartTypes.getAll().contains(x))
-                        .collect(Collectors.toList()).get(0));
+                nullSafeGet(
+                        List.of(args).stream()
+                                .filter(x -> DocumentPartTypes.getAll().contains(x))
+                                .collect(Collectors.toList()), 0));
 
         OutputFileTypes outputFileType = OutputFileTypes.getByTitle(
-                List.of(args).stream()
-                        .filter(x -> OutputFileTypes.getAll().contains(x))
-                        .collect(Collectors.toList()).get(0));
+                nullSafeGet(
+                        List.of(args).stream()
+                                .filter(x -> OutputFileTypes.getAll().contains(x))
+                                .collect(Collectors.toList()), 0));
 
         OutputTypes outputType = OutputTypes.getByTitle(
-                List.of(args).stream()
-                        .filter(x -> OutputTypes.getAll().contains(x))
-                        .collect(Collectors.toList()).get(0));
+                nullSafeGet(
+                        List.of(args).stream()
+                                .filter(x -> OutputTypes.getAll().contains(x))
+                                .collect(Collectors.toList()), 0));
 
         String url = parseUrl(args[0]);
         String filename;
@@ -56,7 +59,7 @@ public class InputArgsService {
 
                             } else { //FILE -f
                                 if (args.length == 3) { // (-text / -body / -head / -all) OR (-txt / -html / -xml)
-                                    if (DocumentPartTypes.getAll().contains(args[2]) || OutputTypes.getAll().contains(args[2])) {
+                                    if (DocumentPartTypes.getAll().contains(args[2]) || OutputFileTypes.getAll().contains(args[2])) {
                                         filename = null;
                                     } else {
                                         filename = args[2]; // filename
@@ -64,12 +67,12 @@ public class InputArgsService {
 
                                 } else if (args.length == 4) {
                                     if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
-                                        if (OutputTypes.getAll().contains(args[3])) {
+                                        if (OutputFileTypes.getAll().contains(args[3])) {
                                             filename = null; // -txt / -html / -xml
                                         } else {
                                             filename = args[3]; // filename
                                         }
-                                    } else if (OutputTypes.getAll().contains(args[2])) { // -txt / -html / -xml
+                                    } else if (OutputFileTypes.getAll().contains(args[2])) { // -txt / -html / -xml
                                         filename = args[3]; // filename
                                     } else {
                                         throw new IllegalArgumentException("After -f must be part of scrapping page "
@@ -78,7 +81,7 @@ public class InputArgsService {
 
                                 } else { // args.length == 5
                                     if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
-                                        if (OutputTypes.getAll().contains(args[3])) { // -txt / -html / -xml
+                                        if (OutputFileTypes.getAll().contains(args[3])) { // -txt / -html / -xml
                                             filename = args[4]; // filename
                                         } else {
                                             throw new IllegalArgumentException("You must write arguments in order: "
@@ -126,14 +129,18 @@ public class InputArgsService {
 
     private static String parseFilename(String filename, String url, OutputFileTypes outputFileType) {
         if (filename == null) {
-            return url + outputFileType.getType();
-        } else {
-            String regex = "^*" + outputFileType.getType() + "$";
-            if (Pattern.matches(regex, filename)) {
-                return filename;
-            } else {
-                return filename + outputFileType.getType();
-            }
+            filename = url.replace("\\", "").replace("/", "");
         }
+        String regex = ".*\\." + outputFileType.getType().replace(".", "") + "$";
+        if (Pattern.matches(regex, filename)) {
+            return filename;
+        } else {
+            return filename + outputFileType.getType();
+        }
+    }
+
+    private static String nullSafeGet(List<String> list, int i) {
+        if (list.isEmpty()) return null;
+        return list.get(0);
     }
 }
