@@ -33,7 +33,7 @@ public class OutputService {
         System.out.println("\nContent: \n" + page.getContent());
     }
 
-    public static void ConsoleHelp() { //todo rewrite
+    public static void ConsoleHelp() {
         System.out.println("Usage of Dana's web scraping program:\n" +
                 "\n" +
                 "[-h]\n" +
