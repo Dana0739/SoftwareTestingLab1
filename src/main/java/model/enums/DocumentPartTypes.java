@@ -24,6 +24,6 @@ public enum DocumentPartTypes {
     }
 
     public static ArrayList<String> getAll() {
-        return new ArrayList<String>(Arrays.asList("-all", "-head", "-body", "-text"));
+        return new ArrayList<>(Arrays.asList("-all", "-head", "-body", "-text"));
     }
 }

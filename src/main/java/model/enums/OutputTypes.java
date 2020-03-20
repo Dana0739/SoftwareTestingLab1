@@ -22,6 +22,6 @@ public enum OutputTypes {
     }
 
     public static ArrayList<String> getAll() {
-        return new ArrayList<String>(Arrays.asList("-f", "-c"));
+        return new ArrayList<>(Arrays.asList("-f", "-c"));
     }
 }

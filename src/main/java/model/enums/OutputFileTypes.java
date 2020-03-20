@@ -22,7 +22,11 @@ public enum OutputFileTypes {
         return title;
     }
 
+    public String getType() {
+        return "." + title.substring(1, title.length() - 1);
+    }
+
     public static ArrayList<String> getAll() {
-        return new ArrayList<String>(Arrays.asList("-txt", "-html", "-xml"));
+        return new ArrayList<>(Arrays.asList("-txt", "-html", "-xml"));
     }
 }

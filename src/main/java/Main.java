@@ -4,10 +4,8 @@ import services.InputArgsService;
 import services.OutputService;
 import services.WebScrapingService;
 
-import java.io.IOException;
-
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         switch (args.length) {
 
@@ -41,7 +39,7 @@ public class Main {
         }
     }
 
-    private static void callScrapper(String[] args) throws IOException {
+    private static void callScrapper(String[] args) {
         WebScrapperState state = InputArgsService.parse(args);
         ScrappedPage page = WebScrapingService.Scrap(state);
         OutputService.Output(state, page);

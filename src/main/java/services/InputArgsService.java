@@ -91,8 +91,8 @@ public class InputArgsService {
                                                 "filename! For help use command -h.");
                                     }
                                 }
-
                             }
+
                         } else {
                             throw new IllegalArgumentException("You can write other args only after "
                                     + "output type command (-c or -f)! For help use command -h.");
@@ -108,6 +108,10 @@ public class InputArgsService {
                 throw new IllegalArgumentException("You can’t input more than 5 parameters! For help use command -h.");
         }
 
+        if (outputType.equals(OutputTypes.FILE)) {
+            filename = parseFilename(filename, url, outputFileType);
+        }
+
         return new WebScrapperState(documentPartType, outputType, outputFileType, filename, url);
     }
 
@@ -116,7 +120,20 @@ public class InputArgsService {
         if (Pattern.matches(regex, url)) {
             return url;
         } else {
-            throw new IllegalArgumentException("Invalid url! Please, write URL correctly. For help use command -h.");
+            throw new IllegalArgumentException("Invalid URL! Please, write URL correctly. For help use command -h.");
+        }
+    }
+
+    private static String parseFilename(String filename, String url, OutputFileTypes outputFileType) {
+        if (filename == null) {
+            return url + outputFileType.getType();
+        } else {
+            String regex = "^*" + outputFileType.getType() + "$";
+            if (Pattern.matches(regex, filename)) {
+                return filename;
+            } else {
+                return filename + outputFileType.getType();
+            }
         }
     }
 }
