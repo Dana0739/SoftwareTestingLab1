@@ -34,7 +34,7 @@ public class OutputService {
     }
 
     public static void ConsoleHelp() {
-        System.out.println("Usage of Dana's web scraping program:\n" +
+        System.out.println("\nUsage of Dana's web scraping program:\n" +
                 "\n" +
                 "[-h]\n" +
                 "[<URL> (-text / -body / -head / -all)]\n" +
