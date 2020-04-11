@@ -125,6 +125,6 @@ public class WebScrappingServiceTest {
     @Test
     public void scrapTest_negative_url() {
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> WebScrapingService.scrap(new WebScrapperState(DocumentPartTypes.TEXT, OutputTypes.FILE, OutputFileTypes.TXT, "filename.txt", "http://www.exampler.org/")));
-        assertEquals(exception.getMessage(), "This URL address doesn’t exist!");
+        assertEquals(exception.getMessage(), "This URL address doesn't exist!");
     }
 }

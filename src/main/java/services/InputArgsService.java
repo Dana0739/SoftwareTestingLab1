@@ -1,5 +1,7 @@
 package services;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import model.WebScrapperState;
 import model.enums.DocumentPartTypes;
@@ -12,103 +14,40 @@ import java.util.stream.Collectors;
 public class InputArgsService {
 
     public static WebScrapperState parse(String[] args) {
-        DocumentPartTypes documentPartType = DocumentPartTypes.getByTitle(
-                nullSafeGet(
-                        List.of(args).stream()
-                                .filter(x -> DocumentPartTypes.getAll().contains(x))
-                                .collect(Collectors.toList()), 0));
-
-        OutputFileTypes outputFileType = OutputFileTypes.getByTitle(
-                nullSafeGet(
-                        List.of(args).stream()
-                                .filter(x -> OutputFileTypes.getAll().contains(x))
-                                .collect(Collectors.toList()), 0));
-
-        OutputTypes outputType = OutputTypes.getByTitle(
-                nullSafeGet(
-                        List.of(args).stream()
-                                .filter(x -> OutputTypes.getAll().contains(x))
-                                .collect(Collectors.toList()), 0));
-
+        DocumentPartTypes documentPartType = DocumentPartTypes.getByTitle(getTitle(args, DocumentPartTypes.getAll()));
+        OutputFileTypes outputFileType = OutputFileTypes.getByTitle(getTitle(args, OutputFileTypes.getAll()));
+        OutputTypes outputType = OutputTypes.getByTitle(getTitle(args, OutputTypes.getAll()));
         String url = parseUrl(args[0]);
         String filename;
 
-        switch (args.length) {
-
-            case 1:
-                filename = null;
-                break;
-
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                if (OutputTypes.getAll().contains(args[1]) || DocumentPartTypes.getAll().contains(args[1])) { // -c / -f / -text / -body / -head / -all
-                    if (args.length == 2) {
-                        filename = null;
-                    } else {
-                        if (OutputTypes.getAll().contains(args[1])) { // -c / -f
-                            if (args[1].equals(OutputTypes.CONSOLE.getTitle())) { //CONSOLE -c
-                                if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
-                                    filename = null;
-                                } else {
-                                    throw new IllegalArgumentException("After -c output type you can write only "
-                                            + "scrapping document part argument! (-text / -body / -head / -all) "
-                                            + "For help use command -h.");
-                                }
-
-                            } else { //FILE -f
-                                if (args.length == 3) { // (-text / -body / -head / -all) OR (-txt / -html / -xml)
-                                    if (DocumentPartTypes.getAll().contains(args[2]) || OutputFileTypes.getAll().contains(args[2])) {
-                                        filename = null;
-                                    } else {
-                                        filename = args[2]; // filename
-                                    }
-
-                                } else if (args.length == 4) {
-                                    if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
-                                        if (OutputFileTypes.getAll().contains(args[3])) {
-                                            filename = null; // -txt / -html / -xml
-                                        } else {
-                                            filename = args[3]; // filename
-                                        }
-                                    } else if (OutputFileTypes.getAll().contains(args[2])) { // -txt / -html / -xml
-                                        filename = args[3]; // filename
-                                    } else {
-                                        throw new IllegalArgumentException("After -f must be part of scrapping page "
-                                                + "or file type argument before filename! For help use command -h.");
-                                    }
-
-                                } else { // args.length == 5
-                                    if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
-                                        if (OutputFileTypes.getAll().contains(args[3])) { // -txt / -html / -xml
-                                            filename = args[4]; // filename
-                                        } else {
-                                            throw new IllegalArgumentException("You must write arguments in order: "
-                                                    + "url, -f, part of scrapping page argument, file type argument, " +
-                                                    "filename! For help use command -h.");
-                                        }
-                                    } else {
-                                        throw new IllegalArgumentException("You must write arguments in order: "
-                                                + "url, -f, part of scrapping page argument, file type argument, " +
-                                                "filename! For help use command -h.");
-                                    }
-                                }
-                            }
-
-                        } else {
-                            throw new IllegalArgumentException("You can write other args only after "
-                                    + "output type command (-c or -f)! For help use command -h.");
-                        }
-                    }
+        if (args.length == 1) {
+            filename = null;
+        } else {
+            if (OutputTypes.getAll().contains(args[1]) || DocumentPartTypes.getAll().contains(args[1])) { // -c / -f / -text / -body / -head / -all
+                if (args.length == 2) {
+                    filename = null;
                 } else {
-                    throw new IllegalArgumentException("You must write output type command or part of scrapping page "
-                            + "after URL! For help use command -h.");
+                    if (OutputTypes.getAll().contains(args[1])) { // -c / -f
+                        if (args[1].equals(OutputTypes.CONSOLE.getTitle())) { //CONSOLE -c
+                            filename = proceedContentTypeAfterConsole(args);
+                        } else { //FILE -f
+                            if (args.length == 3) {
+                                filename = proceed3args(args);
+                            } else if (args.length == 4) {
+                                filename = proceed4args(args);
+                            } else { // args.length == 5
+                                filename = proceed5Args(args);
+                            }
+                        }
+                    } else {
+                        throw new IllegalArgumentException("You can write other args only after "
+                                + "output type command (-c or -f)! For help use command -h.");
+                    }
                 }
-                break;
-
-            default:
-                throw new IllegalArgumentException("You can’t input more than 5 parameters! For help use command -h.");
+            } else {
+                throw new IllegalArgumentException("You must write output type command or part of scrapping page "
+                        + "after URL! For help use command -h.");
+            }
         }
 
         if (outputType.equals(OutputTypes.FILE)) {
@@ -118,6 +57,21 @@ public class InputArgsService {
         return new WebScrapperState(documentPartType, outputType, outputFileType, filename, url);
     }
 
+
+    private static String getTitle(String[] args, ArrayList<String> allTypes) {
+        return nullSafeGet(
+                Arrays.stream(args)
+                        .filter(allTypes::contains)
+                        .collect(Collectors.toList()), 0);
+    }
+
+
+    private static String nullSafeGet(List<String> list, int i) {
+        if (list.isEmpty()) return null;
+        return list.get(i);
+    }
+
+
     private static String parseUrl(String url) {
         String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
         if (Pattern.matches(regex, url)) {
@@ -126,6 +80,58 @@ public class InputArgsService {
             throw new IllegalArgumentException("Invalid URL! Please, write URL correctly. For help use command -h.");
         }
     }
+
+
+    private static String proceedContentTypeAfterConsole(String[] args) {
+        if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
+            return null;
+        } else {
+            throw new IllegalArgumentException("After -c output type you can write only "
+                    + "scrapping document part argument! (-text / -body / -head / -all) "
+                    + "For help use command -h.");
+        }
+    }
+
+
+    // (-text / -body / -head / -all) OR (-txt / -html / -xml)
+    private static String proceed3args(String[] args) {
+        if (DocumentPartTypes.getAll().contains(args[2]) || OutputFileTypes.getAll().contains(args[2])) {
+            return null;
+        } else {
+            return args[2]; // filename
+        }
+    }
+
+
+    private static String proceed4args(String[] args) {
+        if (DocumentPartTypes.getAll().contains(args[2])) { // -text / -body / -head / -all
+            if (OutputFileTypes.getAll().contains(args[3])) {
+                return null; // -txt / -html / -xml
+            } else {
+                return args[3]; // filename
+            }
+        } else if (OutputFileTypes.getAll().contains(args[2])) { // -txt / -html / -xml
+            return args[3]; // filename
+        } else {
+            throw new IllegalArgumentException("After -f must be part of scrapping page "
+                    + "or file type argument before filename! For help use command -h.");
+        }
+    }
+
+
+    private static String proceed5Args(String[] args) {
+        String exceptionMessage = "You must write arguments in order: "
+                + "url, -f, part of scrapping page argument, file type argument, " +
+                "filename! For help use command -h.";
+
+        if (DocumentPartTypes.getAll().contains(args[2]) && // -text / -body / -head / -all
+            OutputFileTypes.getAll().contains(args[3])) { // -txt / -html / -xml
+            return args[4]; // filename
+        } else {
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+    }
+
 
     private static String parseFilename(String filename, String url, OutputFileTypes outputFileType) {
         if (filename == null) {
@@ -137,10 +143,5 @@ public class InputArgsService {
         } else {
             return filename + outputFileType.getType();
         }
-    }
-
-    private static String nullSafeGet(List<String> list, int i) {
-        if (list.isEmpty()) return null;
-        return list.get(0);
     }
 }

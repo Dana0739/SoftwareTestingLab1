@@ -44,7 +44,7 @@ public class WebScrapingService {
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
-            throw new IllegalArgumentException("This URL address doesn’t exist!");
+            throw new IllegalArgumentException("This URL address doesn't exist!");
         }
     }
 }
